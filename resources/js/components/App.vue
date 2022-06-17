@@ -17,7 +17,16 @@
                 </div>
 
                 <ul class="overflow-auto h-full">
-                    <h2 class="my-2 mb-2 ml-2 text-lg text-gray-600">Groups</h2>
+                    <div class="flex justify-between items-center">
+                        <div class="flex justify-between gap-3">
+                            <h2 class="my-2 mb-2 ml-2 text-lg text-gray-600">Groups</h2>
+                            <button
+                                class="text-blue-600 font-bold text-2xl focus:outline-none">
+                               +
+                            </button>
+                        </div>
+                        <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
+                    </div>
                     <li v-for="n in 10">
                         <GroupCard name="10/A Sınıf Grubu" last-message="ok knk" online-count="12"></GroupCard>
                     </li>
