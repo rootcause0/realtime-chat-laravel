@@ -20,14 +20,14 @@
                     <div class="flex justify-between items-center">
                         <div class="flex justify-between gap-3">
                             <h2 class="my-2 mb-2 ml-2 text-lg text-gray-600">Groups</h2>
-                            <button
+                            <button @click="createChatGroup"
                                 class="text-blue-600 font-bold text-2xl focus:outline-none">
                                +
                             </button>
                         </div>
                         <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
                     </div>
-                    <li v-for="n in 10">
+                    <li v-for="chatGroup in chatGroupList" :key="chatGroup.id">
                         <GroupCard name="10/A Sınıf Grubu" last-message="ok knk" online-count="12"></GroupCard>
                     </li>
                 </ul>
@@ -115,12 +115,38 @@
 </template>
 
 <script>
+
 import GroupCard from "./GroupCard";
 
 export default {
     components: {GroupCard},
+    data() {
+        return {
+            chatGroupList: []
+        }
+    },
     mounted() {
         console.log('Component mounted.')
-    }
+    },
+
+   methods : {
+        createChatGroup() {
+            Swal.fire({
+                title: 'Create Chat Group',
+                html: `<input type="text" id="chat-group-name" name="chatGroupName" class="swal2-input" placeholder="Chat Group Name">`,
+                confirmButtonText: 'Create',
+                focusConfirm: false,
+                preConfirm: async () => {
+                    const chatGroupName = Swal.getPopup().querySelector('#chat-group-name').value
+                    let formData = new FormData()
+                    formData.append('chatGroupName',chatGroupName)
+                    await axios.post('chat-groups',formData)
+                    .then((response) => {
+                        console.log(response)
+                    })
+                }
+            })
+        }
+   }
 }
 </script>
