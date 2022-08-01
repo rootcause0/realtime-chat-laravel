@@ -18,10 +18,20 @@ class ChatGroupCreated implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($chatGroupName)
     {
-        $this->chatGroupName = 'sd';
+        $this->chatGroupName = $chatGroupName;
         //
+    }
+
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array
+     */
+    public function broadcastWith()
+    {
+        return ['chatGroupName' => $this->chatGroupName];
     }
 
     /**
@@ -31,7 +41,6 @@ class ChatGroupCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        dd('t');
         return new Channel('global');
     }
 }

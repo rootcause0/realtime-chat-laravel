@@ -21,14 +21,14 @@
                         <div class="flex justify-between gap-3">
                             <h2 class="my-2 mb-2 ml-2 text-lg text-gray-600">Groups</h2>
                             <button @click="createChatGroup"
-                                class="text-blue-600 font-bold text-2xl focus:outline-none">
-                               +
+                                    class="text-blue-600 font-bold text-2xl focus:outline-none">
+                                +
                             </button>
                         </div>
                         <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
                     </div>
                     <li v-for="chatGroup in chatGroupList" :key="chatGroup.id">
-                        <GroupCard name="10/A Sınıf Grubu" last-message="ok knk" online-count="12"></GroupCard>
+                        <GroupCard :name="chatGroup" last-message="ok knk" :online-count="12"></GroupCard>
                     </li>
                 </ul>
             </div>
@@ -115,7 +115,6 @@
 </template>
 
 <script>
-
 import GroupCard from "./GroupCard";
 
 export default {
@@ -125,28 +124,29 @@ export default {
             chatGroupList: []
         }
     },
-    mounted() {
-        console.log('Component mounted.')
-    },
-
-   methods : {
+    methods: {
         createChatGroup() {
             Swal.fire({
                 title: 'Create Chat Group',
                 html: `<input type="text" id="chat-group-name" name="chatGroupName" class="swal2-input" placeholder="Chat Group Name">`,
                 confirmButtonText: 'Create',
                 focusConfirm: false,
+                showLoaderOnConfirm: true,
                 preConfirm: async () => {
                     const chatGroupName = Swal.getPopup().querySelector('#chat-group-name').value
                     let formData = new FormData()
-                    formData.append('chatGroupName',chatGroupName)
-                    await axios.post('chat-groups',formData)
-                    .then((response) => {
-                        console.log(response)
-                    })
+                    formData.append('chatGroupName', chatGroupName)
+                    await axios.post('chat-groups', formData)
                 }
             })
         }
-   }
+
+    },
+    mounted() {
+        window.Echo.channel('global')
+            .listen('ChatGroupCreated', (e) => {
+                this.chatGroupList.push(e.chatGroupName)
+            })
+    }
 }
 </script>

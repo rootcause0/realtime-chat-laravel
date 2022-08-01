@@ -35,7 +35,7 @@ class ChatGroupController extends Controller
      */
     public function store(Request $request)
     {
-        ChatGroupCreated::dispatch();
+        ChatGroupCreated::dispatch($request->chatGroupName);
         return response()->json(['status'=>'success','message'=>'Chat Group Crated']);
         //
     }

@@ -22805,9 +22805,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       chatGroupList: []
     };
   },
-  mounted: function mounted() {
-    console.log('Component mounted.');
-  },
   methods: {
     createChatGroup: function createChatGroup() {
       Swal.fire({
@@ -22815,6 +22812,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         html: "<input type=\"text\" id=\"chat-group-name\" name=\"chatGroupName\" class=\"swal2-input\" placeholder=\"Chat Group Name\">",
         confirmButtonText: 'Create',
         focusConfirm: false,
+        showLoaderOnConfirm: true,
         preConfirm: function () {
           var _preConfirm = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
             var chatGroupName, formData;
@@ -22826,9 +22824,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     formData = new FormData();
                     formData.append('chatGroupName', chatGroupName);
                     _context.next = 5;
-                    return axios.post('chat-groups', formData).then(function (response) {
-                      console.log(response);
-                    });
+                    return axios.post('chat-groups', formData);
 
                   case 5:
                   case "end":
@@ -22846,6 +22842,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }()
       });
     }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    window.Echo.channel('global').listen('ChatGroupCreated', function (e) {
+      _this.chatGroupList.push(e.chatGroupName);
+    });
   }
 });
 
@@ -22933,10 +22936,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: chatGroup.id
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_GroupCard, {
-      name: "10/A Sınıf Grubu",
+      name: chatGroup,
       "last-message": "ok knk",
-      "online-count": "12"
-    })]);
+      "online-count": 12
+    }, null, 8
+    /* PROPS */
+    , ["name"])]);
   }), 128
   /* KEYED_FRAGMENT */
   ))])]), _hoisted_10])]);
@@ -23070,8 +23075,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "",
-  cluster: "mt1",
+  key: "443188253c3e5178fb70",
+  cluster: "eu",
   forceTLS: true
 });
 
