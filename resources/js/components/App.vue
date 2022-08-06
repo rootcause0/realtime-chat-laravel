@@ -11,7 +11,7 @@
                 </svg>
               </span>
                         <input type="search" class="block w-full py-2 pl-10 bg-gray-100 rounded outline-none"
-                               name="search"
+                               name="search" v-model="searchTerm"
                                placeholder="Search" required/>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         </div>
                         <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
                     </div>
-                    <li v-for="chatGroup in chatGroupList" :key="chatGroup.id">
+                    <li v-for="chatGroup in filterBySearch" :key="chatGroup.id">
                         <GroupCard :name="chatGroup" last-message="ok knk" :online-count="12"></GroupCard>
                     </li>
                 </ul>
@@ -121,7 +121,15 @@ export default {
     components: {GroupCard},
     data() {
         return {
-            chatGroupList: []
+            chatGroupList: [],
+            searchTerm : ""
+        }
+    },
+    computed: {
+        filterBySearch() {
+            return this.chatGroupList.filter(chatGroup => {
+                return chatGroup.toLowerCase().includes(this.searchTerm);
+            });
         }
     },
     methods: {
