@@ -9,7 +9,6 @@
                 <span class="block ml-2 font-semibold text-gray-600">{{ name }}</span>
                 <span class="block ml-2 text-sm text-gray-600">{{ onlineCount }} online</span>
             </div>
-            <span class="block ml-2 text-sm text-gray-600">{{ lastMessage }}</span>
         </div>
     </a>
 </template>

@@ -28,7 +28,7 @@
                         <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
                     </div>
                     <li v-for="chatGroup in filterBySearch" :key="chatGroup.id">
-                        <GroupCard :name="chatGroup" last-message="ok knk" :online-count="12"></GroupCard>
+                        <GroupCard :name="chatGroup" :online-count="12"></GroupCard>
                     </li>
                 </ul>
             </div>
