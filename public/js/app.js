@@ -22803,7 +22803,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       chatGroupList: [],
-      searchTerm: ""
+      searchTerm: "",
+      userId: ""
     };
   },
   computed: {
@@ -22821,7 +22822,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         title: 'Create Chat Group',
         html: "<input type=\"text\" id=\"chat-group-name\" name=\"chatGroupName\" class=\"swal2-input\" placeholder=\"Chat Group Name\">",
         confirmButtonText: 'Create',
-        focusConfirm: false,
         showLoaderOnConfirm: true,
         preConfirm: function () {
           var _preConfirm = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -22856,6 +22856,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   mounted: function mounted() {
     var _this2 = this;
 
+    axios.get('user-id').then(function (response) {
+      _this2.userId = response.data.user_id;
+    });
     window.Echo.channel('global').listen('ChatGroupCreated', function (e) {
       _this2.chatGroupList.push(e.chatGroupName);
     });
@@ -22946,13 +22949,11 @@ var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_11 = {
   "class": "text-gray-500 text-sm pr-2"
-}, "#user-4304304043", -1
-/* HOISTED */
-);
+};
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"hidden lg:col-span-2 lg:block\"><div class=\"w-full\"><div class=\"relative flex items-center p-3 border-b border-gray-300\"><img class=\"object-cover w-10 h-10 rounded-full\" src=\"https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg\" alt=\"username\"><span class=\"block ml-2 font-bold text-gray-600\">Emma</span><span class=\"absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3\"></span></div><div class=\"flex flex-col justify-evenly h-screen\"><div class=\"relative w-full p-6 overflow-y-auto h-[40rem]\"><ul class=\"space-y-2\"><li class=\"flex justify-start\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Hi</span></div></li><li class=\"flex justify-end\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">Hiiii</span></div></li><li class=\"flex justify-end\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">how are you?</span></div></li><li class=\"flex justify-start\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span></div></li></ul></div><div class=\"flex items-centerjustify-between w-full p-3 border-t border-gray-300\"><button><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"w-6 h-6 text-gray-500\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg></button><button><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"w-5 h-5 text-gray-500\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13\"></path></svg></button><input type=\"text\" placeholder=\"Message\" class=\"block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700\" name=\"message\" required><button><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"w-5 h-5 text-gray-500\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z\"></path></svg></button><button type=\"submit\"><svg class=\"w-5 h-5 text-gray-500 origin-center transform rotate-90\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\"><path d=\"M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z\"></path></svg></button></div></div></div></div>", 1);
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"hidden lg:col-span-2 lg:block\"><div class=\"w-full\"><div class=\"relative flex items-center p-3 border-b border-gray-300\"><img class=\"object-cover w-10 h-10 rounded-full\" src=\"https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg\" alt=\"username\"><span class=\"block ml-2 font-bold text-gray-600\">Emma</span><span class=\"absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3\"></span></div><div class=\"flex flex-col justify-evenly h-screen\"><div class=\"relative w-full p-6 overflow-y-auto h-[40rem]\"><ul class=\"space-y-2\"><li class=\"flex justify-start\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Hi</span></div></li><li class=\"flex justify-end\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">Hiiii</span></div></li><li class=\"flex justify-end\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">how are you?</span></div></li><li class=\"flex justify-start\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </span></div></li></ul></div><div class=\"flex items-centerjustify-between w-full p-3 border-t border-gray-300\"><input type=\"text\" placeholder=\"Message\" class=\"block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700\" name=\"message\" required><button><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"w-5 h-5 text-gray-500\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z\"></path></svg></button><button type=\"submit\"><svg class=\"w-5 h-5 text-gray-500 origin-center transform rotate-90\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\"><path d=\"M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z\"></path></svg></button></div></div></div></div>", 1);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_GroupCard = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("GroupCard");
@@ -22973,7 +22974,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.createChatGroup && $options.createChatGroup.apply($options, arguments);
     }),
     "class": "text-blue-600 font-bold text-2xl focus:outline-none"
-  }, " + ")]), _hoisted_11]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.filterBySearch, function (chatGroup) {
+  }, " + ")]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, "#user-" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.userId), 1
+  /* TEXT */
+  )]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.filterBySearch, function (chatGroup) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: chatGroup.id
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_GroupCard, {

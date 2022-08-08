@@ -17,4 +17,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource("chat-groups",\App\Http\Controllers\ChatGroupController::class);
+Route::resource("chat-groups", \App\Http\Controllers\ChatGroupController::class);
+
+
+// User Related Endpoints
+Route::get('/user-id', function () {
+    $userId = substr(floor(time() - 999999999), 4, 18);
+    return response()->json(['status' => 'success', 'user_id' => $userId]);
+});

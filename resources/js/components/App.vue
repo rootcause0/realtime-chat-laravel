@@ -25,7 +25,7 @@
                                 +
                             </button>
                         </div>
-                        <span class="text-gray-500 text-sm pr-2">#user-4304304043</span>
+                        <span class="text-gray-500 text-sm pr-2">#user-{{ userId }}</span>
                     </div>
                     <li v-for="chatGroup in filterBySearch" :key="chatGroup.id">
                         <GroupCard :name="chatGroup" :online-count="12"></GroupCard>
@@ -70,23 +70,6 @@
                         </div>
 
                         <div class="flex  items-centerjustify-between w-full p-3 border-t border-gray-300">
-                            <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-500" fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </button>
-                            <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
-                                </svg>
-                            </button>
-
                             <input type="text" placeholder="Message"
                                    class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
                                    name="message" required/>
@@ -122,7 +105,8 @@ export default {
     data() {
         return {
             chatGroupList: [],
-            searchTerm : ""
+            searchTerm: "",
+            userId: ""
         }
     },
     computed: {
@@ -138,7 +122,6 @@ export default {
                 title: 'Create Chat Group',
                 html: `<input type="text" id="chat-group-name" name="chatGroupName" class="swal2-input" placeholder="Chat Group Name">`,
                 confirmButtonText: 'Create',
-                focusConfirm: false,
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
                     const chatGroupName = Swal.getPopup().querySelector('#chat-group-name').value
@@ -151,6 +134,12 @@ export default {
 
     },
     mounted() {
+
+        axios.get('user-id')
+            .then((response) => {
+                this.userId = response.data.user_id
+            })
+
         window.Echo.channel('global')
             .listen('ChatGroupCreated', (e) => {
                 this.chatGroupList.push(e.chatGroupName)
