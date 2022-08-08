@@ -27,8 +27,8 @@
                         </div>
                         <span class="text-gray-500 text-sm pr-2">#user-{{ userId }}</span>
                     </div>
-                    <li v-for="chatGroup in filterBySearch" :key="chatGroup.id">
-                        <GroupCard :name="chatGroup" :online-count="12"></GroupCard>
+                    <li v-for="chatGroup in filterBySearch" :key="chatGroup.id" v-on:click="setChatGroup(chatGroup.chatGroupId)">
+                        <GroupCard :name="chatGroup.chatGroupName" :online-count="12"></GroupCard>
                     </li>
                 </ul>
             </div>
@@ -57,7 +57,8 @@
                                 </li>
                                 <li class="flex justify-end">
                                     <div class="flex flex-col justify-between">
-                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+                                        <div
+                                            class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
                                             <span class="block">Hi</span>
                                         </div>
                                         <div class="text-sm text-gray-500 px-4 py-2 italic">
@@ -67,7 +68,8 @@
                                 </li>
                                 <li class="flex justify-end">
                                     <div class="flex flex-col justify-between">
-                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+                                        <div
+                                            class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
                                             <span class="block">Hi</span>
                                         </div>
                                         <div class="text-sm text-gray-500 px-4 py-2 italic">
@@ -131,7 +133,7 @@ export default {
     computed: {
         filterBySearch() {
             return this.chatGroupList.filter(chatGroup => {
-                return chatGroup.toLowerCase().includes(this.searchTerm);
+                return chatGroup.chatGroupName.toLowerCase().includes(this.searchTerm);
             });
         }
     },
@@ -149,19 +151,21 @@ export default {
                     await axios.post('chat-groups', formData)
                 }
             })
+        },
+        setChatGroup(chatGroupId) {
+            console.log(chatGroupId)
         }
 
     },
     mounted() {
-
         axios.get('user-id')
             .then((response) => {
                 this.userId = response.data.user_id
             })
 
         window.Echo.channel('global')
-            .listen('ChatGroupCreated', (e) => {
-                this.chatGroupList.push(e.chatGroupName)
+            .listen('ChatGroupCreated', (chatGroup) => {
+                this.chatGroupList.push(chatGroup)
             })
     }
 }

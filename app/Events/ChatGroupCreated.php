@@ -12,6 +12,7 @@ class ChatGroupCreated implements ShouldBroadcast
     use Dispatchable;
 
     public string $chatGroupName;
+    public string $chatGroupId;
 
     /**
      * Create a new event instance.
@@ -21,6 +22,7 @@ class ChatGroupCreated implements ShouldBroadcast
     public function __construct($chatGroupName)
     {
         $this->chatGroupName = $chatGroupName;
+        $this->chatGroupId = substr(floor(time() - 999999999), 4, 18);
         //
     }
 
@@ -31,7 +33,7 @@ class ChatGroupCreated implements ShouldBroadcast
      */
     public function broadcastWith()
     {
-        return ['chatGroupName' => $this->chatGroupName];
+        return ['chatGroupName' => $this->chatGroupName, 'chatGroupId' => $this->chatGroupId];
     }
 
     /**
