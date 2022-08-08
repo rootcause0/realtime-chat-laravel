@@ -42,28 +42,47 @@
                         <span class="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3">
               </span>
                     </div>
-                    <div class="flex flex-col justify-evenly h-screen">
-                        <div class="relative w-full p-6 overflow-y-auto h-[40rem]">
+                    <div class="flex flex-col h-screen">
+                        <div class="relative w-full p-6 overflow-y-auto h-5/6">
                             <ul class="space-y-2">
                                 <li class="flex justify-start">
-                                    <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                                        <span class="block">Hi</span>
+                                    <div class="flex flex-col justify-between">
+                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
+                                            <span class="block">Hi</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
+                                            <span>~ #user-66064</span>
+                                        </div>
                                     </div>
                                 </li>
                                 <li class="flex justify-end">
-                                    <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                                        <span class="block">Hiiii</span>
+                                    <div class="flex flex-col justify-between">
+                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+                                            <span class="block">Hi</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
+                                            <span>~ #user-66064</span>
+                                        </div>
                                     </div>
                                 </li>
                                 <li class="flex justify-end">
-                                    <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                                        <span class="block">how are you?</span>
+                                    <div class="flex flex-col justify-between">
+                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+                                            <span class="block">Hi</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
+                                            <span>~ #user-66064</span>
+                                        </div>
                                     </div>
                                 </li>
                                 <li class="flex justify-start">
-                                    <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                    <span class="block">Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    </span>
+                                    <div class="flex flex-col justify-between">
+                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
+                                            <span class="block">Hi</span>
+                                        </div>
+                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
+                                            <span>~ #user-66064</span>
+                                        </div>
                                     </div>
                                 </li>
                             </ul>
