@@ -6,13 +6,15 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
-
-class ChatGroupCreated implements ShouldBroadcast
+class NewChatGroupMessage implements ShouldBroadcast
 {
-    use Dispatchable,InteractsWithSockets;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public string $chatGroupName;
+
+    public string $message;
+    public string $author;
     public string $chatGroupId;
 
     /**
@@ -20,9 +22,10 @@ class ChatGroupCreated implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($chatGroupName, $chatGroupId)
+    public function __construct($message, $author, $chatGroupId)
     {
-        $this->chatGroupName = $chatGroupName;
+        $this->message = $message;
+        $this->author = $author;
         $this->chatGroupId = $chatGroupId;
         //
     }
@@ -34,7 +37,7 @@ class ChatGroupCreated implements ShouldBroadcast
      */
     public function broadcastWith()
     {
-        return ['chatGroupName' => $this->chatGroupName, 'chatGroupId' => $this->chatGroupId];
+        return ['message' => $this->message, 'author' => $this->author];
     }
 
     /**
@@ -44,6 +47,6 @@ class ChatGroupCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('global');
+        return new Channel('chat-group.' . $this->chatGroupId);
     }
 }

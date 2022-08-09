@@ -30,20 +30,22 @@ class ChatGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        ChatGroupCreated::dispatch($request->chatGroupName);
-        return response()->json(['status'=>'success','message'=>'Chat Group Crated']);
+        $chatGroupId = substr(floor(time() - 999999999), 4, 18);
+        broadcast(new ChatGroupCreated($request->chatGroupName, $chatGroupId))->toOthers();
+        return response()->json(['status' => 'success', 'message' => 'Chat Group Created', 'chatGroupId' => $chatGroupId]);
+
         //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -54,7 +56,7 @@ class ChatGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -65,8 +67,8 @@ class ChatGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -77,7 +79,7 @@ class ChatGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

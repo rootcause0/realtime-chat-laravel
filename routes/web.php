@@ -20,8 +20,10 @@ Route::get('/', function () {
 Route::resource("chat-groups", \App\Http\Controllers\ChatGroupController::class);
 
 
-// User Related Endpoints
 Route::get('/user-id', function () {
     $userId = substr(floor(time() - 999999999), 4, 18);
     return response()->json(['status' => 'success', 'user_id' => $userId]);
+});
+Route::post('/send-message', function (\Illuminate\Http\Request $request) {
+    broadcast(new \App\Events\NewChatGroupMessage($request->message, $request->author, $request->chatGroupId))->toOthers();
 });

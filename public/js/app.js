@@ -22804,7 +22804,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       chatGroupList: [],
       searchTerm: "",
-      userId: ""
+      userId: "",
+      activeChatGroup: {}
     };
   },
   computed: {
@@ -22818,6 +22819,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: {
     createChatGroup: function createChatGroup() {
+      var _this2 = this;
+
       Swal.fire({
         title: 'Create Chat Group',
         html: "<input type=\"text\" id=\"chat-group-name\" name=\"chatGroupName\" class=\"swal2-input\" placeholder=\"Chat Group Name\">",
@@ -22825,18 +22828,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         showLoaderOnConfirm: true,
         preConfirm: function () {
           var _preConfirm = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var chatGroupName, formData;
+            var self, chatGroupName, formData;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
+                    self = _this2;
                     chatGroupName = Swal.getPopup().querySelector('#chat-group-name').value;
                     formData = new FormData();
                     formData.append('chatGroupName', chatGroupName);
-                    _context.next = 5;
-                    return axios.post('chat-groups', formData);
+                    _context.next = 6;
+                    return axios.post('chat-groups', formData).then(function (res) {
+                      self.chatGroupList.push({
+                        'chatGroupName': chatGroupName,
+                        'chatGroupId': res.data.chatGroupId
+                      });
+                    });
 
-                  case 5:
+                  case 6:
                   case "end":
                     return _context.stop();
                 }
@@ -22852,18 +22861,55 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }()
       });
     },
-    setChatGroup: function setChatGroup(chatGroupId) {
-      console.log(chatGroupId);
+    sendMessage: function sendMessage() {
+      var message = document.getElementById('message-box').value;
+
+      if (message !== "") {
+        var formData = new FormData();
+        formData.append('message', message);
+        formData.append('author', '#user-' + this.userId);
+        formData.append('chatGroupId', this.activeChatGroup.chatGroupId);
+        axios.post('send-message', formData);
+        this.activeChatGroup.messages.push({
+          'message': message
+        });
+        document.getElementById('message-box').value = "";
+      }
+    },
+    setChatGroup: function setChatGroup(chatGroup) {
+      var _this3 = this;
+
+      if (this.activeChatGroup.chatGroupId !== chatGroup.chatGroupId) {
+        // Invoke only if selected group is different from selected one
+        window.Echo.leaveChannel('chat-group.' + this.activeChatGroup.chatGroupId); // The ChatGroupId here is previous id,the recent one (chatGroup argument) is not set yet
+        // delete previous chatGroup properties
+
+        Object.keys(this.activeChatGroup).forEach(function (key) {
+          delete _this3.activeChatGroup[key];
+        });
+        this.activeChatGroup = {
+          chatGroupName: chatGroup.chatGroupName,
+          chatGroupId: chatGroup.chatGroupId,
+          // there goes the new chatGroupId assignment
+          messages: []
+        };
+        window.Echo.channel("chat-group.".concat(this.activeChatGroup.chatGroupId)).listen('NewChatGroupMessage', function (e) {
+          _this3.activeChatGroup.messages.push({
+            'message': e.message,
+            'author': e.author
+          });
+        });
+      }
     }
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this4 = this;
 
     axios.get('user-id').then(function (response) {
-      _this2.userId = response.data.user_id;
+      _this4.userId = response.data.user_id;
     });
     window.Echo.channel('global').listen('ChatGroupCreated', function (chatGroup) {
-      _this2.chatGroupList.push(chatGroup);
+      _this4.chatGroupList.push(chatGroup);
     });
   }
 });
@@ -22956,9 +23002,87 @@ var _hoisted_11 = {
   "class": "text-gray-500 text-sm pr-2"
 };
 var _hoisted_12 = ["onClick"];
+var _hoisted_13 = {
+  key: 0,
+  "class": "hidden lg:col-span-2 lg:block"
+};
+var _hoisted_14 = {
+  "class": "w-full"
+};
+var _hoisted_15 = {
+  "class": "flex flex-row items-center p-3 border-b border-gray-300"
+};
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"hidden lg:col-span-2 lg:block\"><div class=\"w-full\"><div class=\"relative flex items-center p-3 border-b border-gray-300\"><img class=\"object-cover w-10 h-10 rounded-full\" src=\"https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg\" alt=\"username\"><span class=\"block ml-2 font-bold text-gray-600\">Emma</span><span class=\"absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3\"></span></div><div class=\"flex flex-col h-screen\"><div class=\"relative w-full p-6 overflow-y-auto h-5/6\"><ul class=\"space-y-2\"><li class=\"flex justify-start\"><div class=\"flex flex-col justify-between\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Hi</span></div><div class=\"text-sm text-gray-500 px-4 py-2 italic\"><span>~ #user-66064</span></div></div></li><li class=\"flex justify-end\"><div class=\"flex flex-col justify-between\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">Hi</span></div><div class=\"text-sm text-gray-500 px-4 py-2 italic\"><span>~ #user-66064</span></div></div></li><li class=\"flex justify-end\"><div class=\"flex flex-col justify-between\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow\"><span class=\"block\">Hi</span></div><div class=\"text-sm text-gray-500 px-4 py-2 italic\"><span>~ #user-66064</span></div></div></li><li class=\"flex justify-start\"><div class=\"flex flex-col justify-between\"><div class=\"relative max-w-xl px-4 py-2 text-gray-700 rounded shadow\"><span class=\"block\">Hi</span></div><div class=\"text-sm text-gray-500 px-4 py-2 italic\"><span>~ #user-66064</span></div></div></li></ul></div><div class=\"flex items-centerjustify-between w-full p-3 border-t border-gray-300\"><input type=\"text\" placeholder=\"Message\" class=\"block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700\" name=\"message\" required><button><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"w-5 h-5 text-gray-500\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z\"></path></svg></button><button type=\"submit\"><svg class=\"w-5 h-5 text-gray-500 origin-center transform rotate-90\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\"><path d=\"M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z\"></path></svg></button></div></div></div></div>", 1);
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  "class": "w-3 h-3 bg-green-600 rounded-full left-10 top-3"
+}, null, -1
+/* HOISTED */
+);
 
+var _hoisted_17 = {
+  "class": "block ml-2 font-bold text-gray-600"
+};
+var _hoisted_18 = {
+  "class": "flex flex-col h-screen"
+};
+var _hoisted_19 = {
+  "class": "relative w-full p-6 overflow-y-auto h-5/6"
+};
+var _hoisted_20 = {
+  "class": "space-y-2"
+};
+var _hoisted_21 = {
+  key: 0,
+  "class": "flex justify-start"
+};
+var _hoisted_22 = {
+  "class": "flex flex-col justify-between"
+};
+var _hoisted_23 = {
+  "class": "relative max-w-xl px-4 py-2 text-gray-700 rounded shadow"
+};
+var _hoisted_24 = {
+  "class": "block"
+};
+var _hoisted_25 = {
+  "class": "text-sm text-gray-500 px-4 py-2 italic"
+};
+var _hoisted_26 = {
+  key: 1,
+  "class": "flex justify-end"
+};
+var _hoisted_27 = {
+  "class": "flex flex-col justify-between"
+};
+var _hoisted_28 = {
+  "class": "relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow"
+};
+var _hoisted_29 = {
+  "class": "block"
+};
+
+var _hoisted_30 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "text-sm text-gray-500 px-4 py-2 italic"
+}, null, -1
+/* HOISTED */
+);
+
+var _hoisted_31 = {
+  "class": "flex items-centerjustify-between w-full p-3 border-t border-gray-300"
+};
+
+var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
+  "class": "w-5 h-5 text-gray-500 origin-center transform rotate-90",
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 20 20",
+  fill: "currentColor"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+  d: "M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"
+})], -1
+/* HOISTED */
+);
+
+var _hoisted_33 = [_hoisted_32];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_GroupCard = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("GroupCard");
 
@@ -22984,11 +23108,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: chatGroup.id,
       onClick: function onClick($event) {
-        return $options.setChatGroup(chatGroup.chatGroupId);
+        return $options.setChatGroup(chatGroup);
       }
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_GroupCard, {
-      name: chatGroup.chatGroupName,
-      "online-count": 12
+      name: chatGroup.chatGroupName
     }, null, 8
     /* PROPS */
     , ["name"])], 8
@@ -22996,7 +23119,35 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , _hoisted_12);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])]), _hoisted_13])]);
+  ))])]), Object.keys($data.activeChatGroup).length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.activeChatGroup.chatGroupName), 1
+  /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.activeChatGroup.messages, function (message) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", _hoisted_20, [message.hasOwnProperty('author') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(message.message), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "~ " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(message.author), 1
+    /* TEXT */
+    )])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(message.message), 1
+    /* TEXT */
+    )]), _hoisted_30])]))]);
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    placeholder: "Message",
+    onKeyup: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function () {
+      return $options.sendMessage && $options.sendMessage.apply($options, arguments);
+    }, ["enter"])),
+    "class": "block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700",
+    name: "message",
+    id: "message-box",
+    required: ""
+  }, null, 32
+  /* HYDRATE_EVENTS */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[3] || (_cache[3] = function () {
+      return $options.sendMessage && $options.sendMessage.apply($options, arguments);
+    })
+  }, _hoisted_33)])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
 }
 
 /***/ }),
@@ -23035,13 +23186,8 @@ var _hoisted_4 = {
 var _hoisted_5 = {
   "class": "block ml-2 font-semibold text-gray-600"
 };
-var _hoisted_6 = {
-  "class": "block ml-2 text-sm text-gray-600"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.name), 1
-  /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.onlineCount) + " online", 1
   /* TEXT */
   )])])]);
 }

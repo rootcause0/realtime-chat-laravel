@@ -27,63 +27,38 @@
                         </div>
                         <span class="text-gray-500 text-sm pr-2">#user-{{ userId }}</span>
                     </div>
-                    <li v-for="chatGroup in filterBySearch" :key="chatGroup.id" v-on:click="setChatGroup(chatGroup.chatGroupId)">
-                        <GroupCard :name="chatGroup.chatGroupName" :online-count="12"></GroupCard>
+                    <li v-for="chatGroup in filterBySearch" :key="chatGroup.id" v-on:click="setChatGroup(chatGroup)">
+                        <GroupCard :name="chatGroup.chatGroupName"></GroupCard>
                     </li>
                 </ul>
             </div>
-            <div class="hidden lg:col-span-2 lg:block">
+            <div class="hidden lg:col-span-2 lg:block" v-if="Object.keys(activeChatGroup).length > 0">
                 <div class="w-full">
-                    <div class="relative flex items-center p-3 border-b border-gray-300">
-                        <img class="object-cover w-10 h-10 rounded-full"
-                             src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg"
-                             alt="username"/>
-                        <span class="block ml-2 font-bold text-gray-600">Emma</span>
-                        <span class="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3">
-              </span>
+                    <div class="flex flex-row items-center p-3 border-b border-gray-300">
+                        <span class="w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>
+                        <span class="block ml-2 font-bold text-gray-600">{{ activeChatGroup.chatGroupName }}</span>
                     </div>
                     <div class="flex flex-col h-screen">
                         <div class="relative w-full p-6 overflow-y-auto h-5/6">
-                            <ul class="space-y-2">
-                                <li class="flex justify-start">
+                            <ul v-for="message in activeChatGroup.messages" class="space-y-2">
+                                <li v-if="message.hasOwnProperty('author')" class="flex justify-start">
                                     <div class="flex flex-col justify-between">
                                         <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                                            <span class="block">Hi</span>
+                                            <span class="block">{{ message.message }}</span>
                                         </div>
                                         <div class="text-sm text-gray-500 px-4 py-2 italic">
-                                            <span>~ #user-66064</span>
+                                            <span>~ {{ message.author }}</span>
                                         </div>
                                     </div>
                                 </li>
-                                <li class="flex justify-end">
+                                <li v-else class="flex justify-end">
                                     <div class="flex flex-col justify-between">
                                         <div
                                             class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                                            <span class="block">Hi</span>
+                                            <span class="block">{{ message.message }}</span>
                                         </div>
                                         <div class="text-sm text-gray-500 px-4 py-2 italic">
-                                            <span>~ #user-66064</span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="flex justify-end">
-                                    <div class="flex flex-col justify-between">
-                                        <div
-                                            class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-                                            <span class="block">Hi</span>
-                                        </div>
-                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
-                                            <span>~ #user-66064</span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="flex justify-start">
-                                    <div class="flex flex-col justify-between">
-                                        <div class="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-                                            <span class="block">Hi</span>
-                                        </div>
-                                        <div class="text-sm text-gray-500 px-4 py-2 italic">
-                                            <span>~ #user-66064</span>
+
                                         </div>
                                     </div>
                                 </li>
@@ -91,18 +66,10 @@
                         </div>
 
                         <div class="flex  items-centerjustify-between w-full p-3 border-t border-gray-300">
-                            <input type="text" placeholder="Message"
+                            <input type="text" placeholder="Message" v-on:keyup.enter="sendMessage"
                                    class="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
-                                   name="message" required/>
-                            <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-                                </svg>
-                            </button>
-                            <button type="submit">
+                                   name="message" id="message-box" required/>
+                            <button v-on:click="sendMessage">
                                 <svg class="w-5 h-5 text-gray-500 origin-center transform rotate-90"
                                      xmlns="http://www.w3.org/2000/svg"
                                      viewBox="0 0 20 20" fill="currentColor">
@@ -127,7 +94,8 @@ export default {
         return {
             chatGroupList: [],
             searchTerm: "",
-            userId: ""
+            userId: "",
+            activeChatGroup: {}
         }
     },
     computed: {
@@ -145,15 +113,58 @@ export default {
                 confirmButtonText: 'Create',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
+                    const self = this
                     const chatGroupName = Swal.getPopup().querySelector('#chat-group-name').value
                     let formData = new FormData()
                     formData.append('chatGroupName', chatGroupName)
                     await axios.post('chat-groups', formData)
+                        .then(function (res) {
+                            self.chatGroupList.push({
+                                'chatGroupName': chatGroupName,
+                                'chatGroupId': res.data.chatGroupId
+                            })
+                        })
                 }
             })
         },
-        setChatGroup(chatGroupId) {
-            console.log(chatGroupId)
+        sendMessage() {
+            let message = document.getElementById('message-box').value
+            if (message !== "") {
+                let formData = new FormData()
+                formData.append('message', message)
+                formData.append('author', '#user-' + this.userId)
+                formData.append('chatGroupId', this.activeChatGroup.chatGroupId)
+                axios.post('send-message', formData)
+                this.activeChatGroup.messages.push({
+                    'message': message,
+                })
+                document.getElementById('message-box').value = ""
+            }
+        },
+
+        setChatGroup(chatGroup) {
+            if (this.activeChatGroup.chatGroupId !== chatGroup.chatGroupId) { // Invoke only if selected group is different from selected one
+                window.Echo.leaveChannel('chat-group.' + this.activeChatGroup.chatGroupId) // The ChatGroupId here is previous id,the recent one (chatGroup argument) is not set yet
+
+                // delete previous chatGroup properties
+                Object.keys(this.activeChatGroup).forEach(key => {
+                    delete this.activeChatGroup[key];
+                })
+
+                this.activeChatGroup = {
+                    chatGroupName: chatGroup.chatGroupName,
+                    chatGroupId: chatGroup.chatGroupId, // there goes the new chatGroupId assignment
+                    messages: []
+                }
+
+                window.Echo.channel(`chat-group.${this.activeChatGroup.chatGroupId}`)
+                    .listen('NewChatGroupMessage', (e) => {
+                        this.activeChatGroup.messages.push({
+                            'message': e.message,
+                            'author': e.author
+                        })
+                    })
+            }
         }
 
     },
