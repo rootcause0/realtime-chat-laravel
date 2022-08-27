@@ -15,7 +15,20 @@ composer install
 npm install
 ```
 
-- Configurate your .env file
+## Configuration
+Configurate your .env keys shown below as follows
+
+ ```bash
+BROADCAST_DRIVER=pusher
+QUEUE_CONNECTION=redis
+PUSHER_APP_ID=YOUR_PUSHER_APP_ID
+PUSHER_APP_KEY=YOUR_PUSHER_APP_KEY
+PUSHER_APP_SECRET=YOUR_PUSHER_APP_SECRET
+PUSHER_APP_CLUSTER=YOUR_PUSHER_APP_CLUSTER
+
+```
+## Running
+Execute  ``` php artisan serve ``` and then ``` php artisan queue:work ```
 
 
 ## Contributing
