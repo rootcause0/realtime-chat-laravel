@@ -1,8 +1,14 @@
+![npm](https://img.shields.io/npm/v/requirements?style=flat-square)
+![php](https://img.shields.io/badge/php-%3E%3D8.0-blue)
+![forks](https://img.shields.io/github/forks/rootcause0/realtime-chat-laravel?style=flat-square)
+![license](https://img.shields.io/github/license/rootcause0/realtime-chat-laravel?style=flat-square)
+
 # realtime-chat-laravel
 
 A simple demonstration of Laravel Event Broadcasting feature with Pusher Channels on a real-time chat application.
 
-Redis used as Queue Driver.
+Redis used as Queue Driver.</br>
+You'll need 'phpredis' extension to run this app.
 
 ## Installation
 
